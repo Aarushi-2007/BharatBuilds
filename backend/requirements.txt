@@ -1,0 +1,11 @@
+# --- API ---
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pyjwt>=2.8
+# --- ML: exact versions the models were trained with (sync_models.sh rewrites this block) ---
+pandas==3.0.5
+numpy==2.5.3
+scikit-learn==1.9.1
+xgboost==3.4.1
+scipy==1.18.1
+joblib==1.6.0

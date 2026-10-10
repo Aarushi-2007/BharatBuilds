@@ -1,0 +1,41 @@
+[
+  {
+    "time_utc": "2026-10-10T11:09:49+00:00",
+    "event": "refresh",
+    "weather": {
+      "ok": true,
+      "until": "2026-10-19 23:00:00"
+    },
+    "demand": {
+      "ok": true,
+      "newest": "2026-09-29 23:00:00",
+      "new_hours": 0
+    }
+  },
+  {
+    "time_utc": "2026-10-10T10:50:49+00:00",
+    "event": "refresh",
+    "weather": {
+      "ok": true,
+      "until": "2026-10-19 23:00:00"
+    },
+    "demand": {
+      "ok": true,
+      "newest": "2026-09-29 23:00:00",
+      "new_hours": 0
+    }
+  },
+  {
+    "time_utc": "2026-10-10T10:44:25+00:00",
+    "event": "refresh",
+    "weather": {
+      "ok": true,
+      "until": "2026-10-19 23:00:00"
+    },
+    "demand": {
+      "ok": true,
+      "newest": "2026-09-29 23:00:00",
+      "new_hours": 0
+    }
+  }
+]

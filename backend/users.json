@@ -1,0 +1,10 @@
+[
+  {
+    "email": "operator@gridauthority.demo",
+    "name": "Authority",
+    "role": "planner",
+    "organization": "Demo Grid Authority",
+    "password_hash": "pbkdf2_sha256$600000$1yaA/1DC4/f7c8Br5vriog==$nk8b68dBOP3EkSWtJ0eGt9x2JGnEj0SRPNo82Uf8mGQ=",
+    "active": true
+  }
+]
