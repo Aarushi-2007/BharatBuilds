@@ -1,7 +1,9 @@
 # --- API ---
 fastapi>=0.115
 uvicorn[standard]>=0.30
-pyjwt>=2.8
+pyjwt[crypto]>=2.8
+python-dotenv>=1.0
+boto3>=1.34          # AWS Cognito sign-in (only used when AUTH_MODE=cognito)
 # --- ML: exact versions the models were trained with (sync_models.sh rewrites this block) ---
 pandas==3.0.5
 numpy==2.5.3

@@ -4,8 +4,6 @@ import { useAuth } from "../context/AuthContext.jsx";
 import LogoMark from "../components/ui/LogoMark.jsx";
 import { Logo } from "../components/layout/Sidebar.jsx";
 
-const SHOW_DEMO = import.meta.env.VITE_SHOW_DEMO_LOGIN !== "false";
-
 export default function Login() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
@@ -66,19 +64,6 @@ export default function Login() {
               {busy ? "Signing in…" : "Sign in"}
             </button>
           </form>
-
-          {SHOW_DEMO && (
-            <div className="mt-8 rounded-xl border border-dashed border-gray-300 p-4 text-sm dark:border-night-600">
-              <p className="font-medium text-ink dark:text-white">Local demo account</p>
-              <p className="mt-1 text-ink-muted dark:text-gray-400">
-                operator@gridauthority.demo · Demo@Grid2026
-              </p>
-              <button type="button" className="mt-3 text-sm font-medium text-brand-500 hover:text-brand-600"
-                      onClick={() => { setEmail("operator@gridauthority.demo"); setPassword("Demo@Grid2026"); }}>
-                Fill in demo credentials
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

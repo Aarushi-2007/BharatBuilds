@@ -3,8 +3,8 @@ from pydantic import BaseModel, Field
 
 
 class LoginRequest(BaseModel):
-    email: str = Field(..., examples=["operator@gridauthority.demo"], max_length=254)
-    password: str = Field(..., examples=["Demo@Grid2026"], min_length=1, max_length=256)
+    email: str = Field(..., examples=["you@authority.gov"], max_length=254)
+    password: str = Field(..., min_length=1, max_length=256)
 
 
 class UserOut(BaseModel):

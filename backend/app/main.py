@@ -23,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from . import config
-from .auth import authenticate, create_access_token, get_current_user
+from .auth import authenticate, cognito_login, create_access_token, get_current_user
 from .schemas import LoginRequest, TokenResponse, UserOut
 from .services import DateNotAvailable, GridService
 
@@ -36,10 +36,14 @@ async def lifespan(app: FastAPI):
     app.state.grid = GridService()           # load models + data ONCE at startup
     if config.AUTO_REFRESH:                  # fetch live weather + demand in the background
         threading.Thread(target=app.state.grid.refresh, daemon=True).start()
-    if config.JWT_SECRET_IS_RANDOM:
-        log.warning("JWT_SECRET not set - using a random secret; logins reset when the server restarts.")
-    if not config.USERS_FILE.exists():
-        log.warning("users.json not found - nobody can log in. Create a user: python scripts/create_user.py")
+    if config.AUTH_MODE == "cognito":
+        if not (config.COGNITO_USER_POOL_ID and config.COGNITO_APP_CLIENT_ID):
+            raise RuntimeError("AUTH_MODE=cognito needs COGNITO_USER_POOL_ID and COGNITO_APP_CLIENT_ID")
+    else:
+        if config.JWT_SECRET_IS_RANDOM:
+            log.warning("JWT_SECRET not set - using a random secret; logins reset when the server restarts.")
+        if not config.USERS_FILE.exists():
+            log.warning("users.json not found - nobody can log in. Create a user: python scripts/create_user.py")
     yield
 
 
@@ -102,6 +106,9 @@ def home(request: Request):
 # ------------------------------------------------------------------ /login
 @app.post("/login", response_model=TokenResponse, tags=["Auth"])
 def login(body: LoginRequest):
+    if config.AUTH_MODE == "cognito":
+        token, expires_in, user = cognito_login(body.email, body.password)
+        return TokenResponse(access_token=token, expires_in_seconds=expires_in, user=UserOut(**user))
     user = authenticate(body.email, body.password)
     if user is None:
         raise HTTPException(status_code=401, detail="Incorrect email or password")

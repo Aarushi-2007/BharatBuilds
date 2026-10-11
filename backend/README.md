@@ -25,7 +25,7 @@ cd backend
 ```
 On startup it loads the models, then **fetches the latest weather forecast and demand data in the background** (set `AUTO_REFRESH=0` to disable). Docs: http://127.0.0.1:8000/docs
 
-Demo login (local only): `operator@gridauthority.demo` / `Demo@Grid2026` (role: planner)
+Local mode has no built-in users: create one with `scripts/create_user.py` (see Users below), or use Cognito.
 
 ## How a date is forecast
 
@@ -68,6 +68,32 @@ Forecasts need weather for the date (observed or forecast) and demand data **at 
 
 ```bash
 ../.venv/bin/python scripts/create_user.py --email you@authority.gov --name "Your Name" --role planner
-../.venv/bin/python scripts/create_user.py --email operator@gridauthority.demo --disable   # before going public
 ```
 Roles: `operator` (view only), `planner` and `admin` (can refresh/upload data).
+
+## AWS Cognito login
+
+Set `AUTH_MODE=cognito` to replace `users.json` with a Cognito user pool (default is `local`).
+
+```bash
+export AUTH_MODE=cognito
+export COGNITO_REGION=ap-south-1
+export COGNITO_USER_POOL_ID=ap-south-1_XXXXXXXXX
+export COGNITO_APP_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+# export COGNITO_APP_CLIENT_SECRET=...   # only if the app client was created with a secret
+```
+
+Cognito setup:
+1. Create a user pool with email as the sign-in attribute. Optional custom attribute `organization`.
+2. Create an app client with the `ALLOW_USER_PASSWORD_AUTH` and `ALLOW_REFRESH_TOKEN_AUTH` flows.
+3. Create groups named `admin`, `planner`, `operator`. The highest group a user belongs to becomes their role (no group = `operator`).
+4. Create users and give them a permanent password (no forced-change challenge):
+   ```bash
+   aws cognito-idp admin-create-user --user-pool-id $POOL --username a@b.gov \
+     --user-attributes Name=email,Value=a@b.gov Name=email_verified,Value=true Name=name,Value="Asha" --message-action SUPPRESS
+   aws cognito-idp admin-set-user-password --user-pool-id $POOL --username a@b.gov --password '...' --permanent
+   aws cognito-idp admin-add-user-to-group --user-pool-id $POOL --username a@b.gov --group-name planner
+   ```
+
+The API's IAM role needs no Cognito permissions (sign-in is a public call; tokens are checked against the pool's public keys).
+The frontend is unchanged: it posts to `/login` and sends the returned Cognito ID token as `Bearer`. In Cognito mode `JWT_SECRET`, `users.json` and `create_user.py` are unused.

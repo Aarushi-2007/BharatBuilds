@@ -35,7 +35,6 @@ Copy `.env.example` to `.env` to change settings:
 | Variable | Default | Meaning |
 |---|---|---|
 | `VITE_API_URL` | `http://127.0.0.1:8000` | Where the backend runs (change to your AWS URL later) |
-| `VITE_SHOW_DEMO_LOGIN` | `true` | Set to `false` to hide the demo-credentials box |
 
 If you serve the frontend from a different address, add it to the backend's `ALLOWED_ORIGINS`.
 
